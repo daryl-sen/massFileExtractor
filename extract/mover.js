@@ -1,4 +1,4 @@
-const { readdirSync, lstatSync, renameSync, existsSync, mkdirSync } = require('fs');
+const { readdirSync, lstatSync, rename, existsSync, mkdirSync } = require('fs');
 
 const SOURCE_DIR = 'target';
 const OUTPUT_DIR = 'collated';
@@ -15,11 +15,9 @@ const extract = (targetDir = SOURCE_DIR) => {
   const breadCrumbs = targetDir.split('/');
   const currentDir = breadCrumbs[breadCrumbs.length - 1]; // last item in path
   let dashes = '-- '.repeat(breadCrumbs.length);
-  // PRINT && console.log(`${dashes}Currently analyzing: "${targetDir}"...`)
 
   // if current directory is not a directory, it is a file
   if (!lstatSync(targetDir).isDirectory()) {
-    PRINT && console.log(dashes + 'Not a directory, moving file...');
     let newLocation = OUTPUT_DIR + '/' + currentDir;
 
     // if a file with the same name exists, rename to `filename-n`, where `n` is the number of repeats
@@ -28,20 +26,19 @@ const extract = (targetDir = SOURCE_DIR) => {
       repeats++;
       newLocation += "-" + repeats;
     }
-    renameSync(targetDir, newLocation, () => {console.log(`File "${currentDir}" moved.`)});
+    rename(targetDir, newLocation, () => {console.log(`Moving "${currentDir}"...`)});
     return;
   }
 
   const subdirs = readdirSync(targetDir);
   
   if (subdirs.length === 0) {
-    // console.log(`${dashes}"${targetDir}" has no subdirectories`)
     return {
       [currentDir]: []
     }
   }
 
-  PRINT && console.log(`${dashes}Contents for "${targetDir}":`)
+  // PRINT && console.log(`${dashes}/${targetDir} (current dir)`)
   for (const dir of subdirs) {
     PRINT && console.log(dashes + dir);
     extract(targetDir + '/' + dir);
