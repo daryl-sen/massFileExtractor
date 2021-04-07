@@ -1,6 +1,11 @@
-const { readdirSync, lstatSync } = require('fs');
+const { readdirSync, lstatSync, renameSync, existsSync, mkdirSync } = require('fs');
 
-const BASE_DIR = 'target';
+const SOURCE_DIR = 'target';
+const OUTPUT_DIR = 'collated';
+
+if (!existsSync(OUTPUT_DIR)) {
+  mkdirSync(OUTPUT_DIR);
+}
 
 const fileTypes = [
   'jpg',
@@ -17,15 +22,15 @@ const extract = (targetDir) => {
   console.log(`${dashes}Currently analyzing: "${targetDir}"...`)
 
   if (!lstatSync(targetDir).isDirectory()) {
-    console.log(dashes + 'Not a directory');
+    console.log(dashes + 'Not a directory, moving file...');
+    const newLocation = OUTPUT_DIR + '/' + currentDir
+    renameSync(targetDir, newLocation, () => {console.log('File moved.')});
     return;
   }
   const subdirs = readdirSync(targetDir);
   
   if (subdirs.length === 0) {
     console.log(`${dashes}"${targetDir}" has no subdirectories`)
-    // for (const level of breadCrumbs.splice(1)) {
-    // }
     return {
       [currentDir]: []
     }
@@ -34,7 +39,6 @@ const extract = (targetDir) => {
   console.log(`${dashes}Contents for "${targetDir}":`)
   for (const dir of subdirs) {
     console.log(dashes + dir)
-    // console.log('-----' + breadCrumbs)
     extract(targetDir + '/' + dir);
   }
 
@@ -44,4 +48,4 @@ const extract = (targetDir) => {
 
 };
 
-extract(BASE_DIR)
+extract(SOURCE_DIR)
