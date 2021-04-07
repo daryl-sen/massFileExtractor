@@ -12,18 +12,25 @@ const dirMap = {};
 const extract = (targetDir) => {
   const breadCrumbs = targetDir.split('/');
   const currentDir = breadCrumbs[breadCrumbs.length - 1];
-  console.log(breadCrumbs, currentDir);
+  console.log(`Currently analyzing: "${targetDir}"...`)
   const subdirs = readdirSync(targetDir);
   
   if (subdirs.length === 0) {
+    console.log(`"${targetDir}" has no subdirectories`)
     return {
       [currentDir]: []
     }
   }
 
+  console.log(`Subdirectories for "${targetDir}":`)
   for (const dir of subdirs) {
-    console.log(breadCrumbs)
+    console.log('-----' + dir)
+    console.log('-----' + breadCrumbs)
     extract(targetDir + '/' + dir);
+  }
+
+  return {
+    [currentDir]: subdirs
   }
 
 };
