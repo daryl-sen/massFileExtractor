@@ -24,9 +24,16 @@ const extract = (targetDir = SOURCE_DIR) => {
     let repeats = 0;
     while (existsSync(newLocation)) {
       repeats++;
-      newLocation += "-" + repeats;
+      newLocArray = newLocation.split('.');
+      const fileExt = newLocArray.pop();
+      // handle filenames with multiple periods, such as file.test.js
+      newLocation = newLocArray.join('.') + "-" + repeats + "." + fileExt;
     }
-    rename(targetDir, newLocation, () => {console.log(`Moving "${currentDir}"...`)});
+    if (repeats) {
+      rename(targetDir, newLocation, () => {console.log(`(Renamed duplicate file name) Moving from "${targetDir}" to "${newLocation}"...`)});
+    } else {
+      rename(targetDir, newLocation, () => {console.log(`Moving from "${targetDir}" to "${newLocation}"...`)});
+    }
     return;
   }
 
