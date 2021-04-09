@@ -1,0 +1,5 @@
+{
+  "sourceDir": "target",
+  "outputDir": "collated",
+  "print": true
+}
