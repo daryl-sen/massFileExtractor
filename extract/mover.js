@@ -8,12 +8,13 @@ const FILE_TYPES = process.argv.slice(3); // list all file types separated by a 
 
 const extract = (targetDir = SOURCE_DIR) => {
   // create the output directory
+  if (!existsSync(OUTPUT_DIR)) {
+    mkdirSync(OUTPUT_DIR);
+  }
   if (!existsSync(SOURCE_DIR)) {
     mkdirSync(SOURCE_DIR);
     console.log("We're setting up for the first time! Some instructions to come.");
-  }
-  if (!existsSync(OUTPUT_DIR)) {
-    mkdirSync(OUTPUT_DIR);
+    return;
   }
 
   const breadCrumbs = targetDir.split('/');
