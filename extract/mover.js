@@ -35,8 +35,8 @@ const extract = (targetDir = SOURCE_DIR) => {
       (FILE_MODE === 'EXCLUDE' && FILE_TYPES.includes('.' + fileExt)) || 
       (FILE_MODE === 'ONLY' && !FILE_TYPES.includes('.' + fileExt))
       ) {
-        PRINT && console.log(`${dashes}File "${targetDir}" ignored. Specified extensions: ${FILE_TYPES}; This file extension: ${fileExt}`);
-        return
+        PRINT && console.log(`${dashes}File "${targetDir}" ignored.`);
+        return;
     }
 
     while (existsSync(newLocation)) {
