@@ -14,7 +14,7 @@ const extract = (targetDir = SOURCE_DIR) => {
   }
   if (!existsSync(SOURCE_DIR)) {
     mkdirSync(SOURCE_DIR);
-    console.log("We're setting up for the first time! Some instructions to come.");
+    console.log("We're setting up for the first time! The necessary folders have been set up, please run this module again.");
     return;
   }
 
@@ -28,10 +28,19 @@ const extract = (targetDir = SOURCE_DIR) => {
 
     // if a file with the same name exists, rename to `filename-n`, where `n` is the number of repeats
     let repeats = 0;
+    newLocArray = newLocation.split('.');
+    const fileExt = newLocArray.pop();
+
+    if (
+      (FILE_MODE === 'EXCLUDE' && FILE_TYPES.includes('.' + fileExt)) || 
+      (FILE_MODE === 'ONLY' && !FILE_TYPES.includes('.' + fileExt))
+      ) {
+        PRINT && console.log(`${dashes}File "${targetDir}" ignored. Specified extensions: ${FILE_TYPES}; This file extension: ${fileExt}`);
+        return
+    }
+
     while (existsSync(newLocation)) {
       repeats++;
-      newLocArray = newLocation.split('.');
-      const fileExt = newLocArray.pop();
       // handle filenames with multiple periods, such as file.test.js
       newLocation = newLocArray.join('.') + "-" + repeats + "." + fileExt;
     }
